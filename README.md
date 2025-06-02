@@ -3,7 +3,7 @@
 </h1>
 
 <p align="center">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Book_icon.svg/1024px-Book_icon.svg.png" width="100" alt="VUVISA Logo"/>
+  <img src="![logo_v2](https://github.com/user-attachments/assets/3eaa98b0-5e5f-4cdf-8d6f-5bcac7a15ec9)" width="100" alt="VUVISA Logo"/>
 </p>
 
 <h1 align="center">📚 VUVISA - E-commerce Platform Backend</h1>
