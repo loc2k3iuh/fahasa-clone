@@ -5,6 +5,7 @@
 <p align="center">
   <img src="![logo_v2](https://github.com/user-attachments/assets/3eaa98b0-5e5f-4cdf-8d6f-5bcac7a15ec9)" width="100" alt="VUVISA Logo"/>
 </p>
+![logo_v2](https://github.com/user-attachments/assets/df434a1d-eea8-452f-ab19-60d814d17298)
 
 <h1 align="center">📚 VUVISA - E-commerce Platform Backend</h1>
 
