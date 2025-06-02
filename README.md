@@ -16,7 +16,7 @@
 
 ## 🚀 Overview
 
-VUVISA is a comprehensive e-commerce platform backend built with Spring Boot, designed to provide a robust API for online bookstores and office supply retailers. This project is a clone of Fahasa, a popular Vietnamese online bookstore, with enhanced features and modern architecture.
+VUVISA is a comprehensive e-commerce platform backend built with Spring Boot (backend), ReactJs (frontend), designed to provide a robust API for online bookstores and office supply retailers. This project is a clone of Fahasa, a popular Vietnamese online bookstore, with enhanced features and modern architecture.
 
 ---
 
