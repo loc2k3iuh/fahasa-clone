@@ -1,13 +1,11 @@
-<h1 align="center">
-  FAHASA CLONE APPLICATION (INTERFACE)
-</h1>
+<h1 align="center">📚 VUVISA - E-commerce Platform Backend</h1>
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/df434a1d-eea8-452f-ab19-60d814d17298" width="400" alt="VUVISA Logo" />
 </p>
 
 
-<h1 align="center">📚 VUVISA - E-commerce Platform Backend</h1>
+
 
 <p align="center">
   <b>Backend for a modern bookstore and office supply platform.</b><br>
