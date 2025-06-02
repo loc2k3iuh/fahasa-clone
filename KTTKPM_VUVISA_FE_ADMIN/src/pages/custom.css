@@ -1,0 +1,27 @@
+.bg-flash-sale {
+    background-image: url('https://cdn0.fahasa.com/media/fahasa_web_image/flash_sale_background_image.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.z-\[-1\] {
+    z-index: -1;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+  
+.scrollbar-hide {
+    -ms-overflow-style: none;  /* Cho IE và Edge */
+    scrollbar-width: none;     /* Cho Firefox */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;  
+    scrollbar-width: none;
+}

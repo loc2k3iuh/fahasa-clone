@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Chi Tiết Đơn Hàng</title>
+    <style>
+        body {
+            font-family: "Times New Roman", sans-serif;
+            margin: 5px auto;
+            width: 500px;
+            borderResponse: 1px solid #ddd;
+            padding: 5px;
+            font-size: 12px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            height: 30px;
+        }
+
+        .orderResponse-id {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .section {
+            margin-top: 5px;
+        }
+
+        .section h3 {
+            margin-bottom: 5px;
+            color: #d80000;
+        }
+
+        table {
+            width: 100%;
+            borderResponse-collapse: collapse;
+            margin-top: 5px;
+        }
+
+        th, td {
+            padding: 5px;
+            borderResponse: 1px solid #ccc;
+            text-align: left;
+        }
+
+        .total {
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .note {
+            color: red;
+            font-size: 12px;
+        }
+
+        .footer {
+            margin-top: 30px;
+            background: #d80000;
+            color: white;
+            padding: 5px;
+            text-align: center;
+        }
+
+        .btn-login {
+            background-color: #d80000;
+            color: white;
+            padding: 5px 10px;
+            text-decoration: none;
+            borderResponse-radius: 5px;
+        }
+
+        .btn-login:hover {
+            background-color: #a10000;
+        }
+
+        .line {
+            font-size: 1px;
+            color: #8a8686;
+        }
+
+        .col-name {
+            width: 68%;
+        }
+
+        .col-price {
+            width: 12%;
+        }
+
+        .col-qty {
+            width: 5%;
+        }
+
+        .col-total {
+            width: 15%;
+        }
+
+    </style>
+</head>
+<body>
+
+<table class="header" width="100%">
+    <tr>
+        <td style="vertical-align: top;">
+            <img class="logo" src="https://cdn1.fahasa.com/skin/frontend/ma_vanese/fahasa/images/fahasa-logo.png"
+                 alt="Fahasa Logo"/>
+            <div class="orderResponse-id">
+                MÃ ĐƠN HÀNG: <span th:text="${order.id}"></span><br/>
+                <small th:text="${#dates.format(order.orderDate, 'dd/MM/yyyy HH:mm:ss')}"></small>
+            </div>
+        </td>
+        <td style="text-align: right; vertical-align: top;">
+            <p>Xin chào <b th:text="${order.fullName}"></b>,<br/>
+                Cảm ơn bạn đã mua hàng tại <b>Vuvisa.com</b><br/>
+            </p>
+        </td>
+    </tr>
+</table>
+
+<hr class="line"/>
+
+<div class="section">
+    <table>
+        <tr>
+            <th>Thông tin thanh toán</th>
+            <th>Phương thức thanh toán</th>
+        </tr>
+        <tr>
+            <td>
+                <div th:text="${order.fullName}"></div>
+                <div th:text="${ order.address}"></div>
+                <div th:text="${ order.ward + ', ' + order.district + ', ' + order.city}"></div>
+                <div>
+                    Tel: <span th:text="${order.phoneNumber}"></span>
+                </div>
+            </td>
+            <td>
+                <div th:text="${order.paymentMethod.name() == 'VN_PAY' ? 'Chuyển khoản ngân hàng' : 'Thanh toán khi nhận hàng'}"></div>
+            </td>
+
+        </tr>
+        <tr>
+            <th>Thông tin giao hàng</th>
+            <th>Phương thức giao hàng</th>
+        </tr>
+        <tr>
+            <td>
+                <div th:text="${order.fullName}"></div>
+                <div th:text="${ order.address}"></div>
+                <div th:text="${ order.ward + ', ' + order.district + ', ' + order.city}"></div>
+                <div>
+                    Tel: <span th:text="${order.phoneNumber}"></span>
+                </div>
+            </td>
+            <td>
+                Giao hàng tiêu chuẩn<br/>
+                Dự kiến giao: <b>Thứ Bảy 12/04/2025</b>
+            </td>
+        </tr>
+    </table>
+</div>
+<hr class="line"/>
+<div class="section">
+    <table>
+        <thead>
+        <tr>
+            <th class="col-name">Sản phẩm</th>
+            <th class="col-price">Đơn giá</th>
+            <th class="col-qty">SL</th>
+            <th class="col-total">Thành tiền</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${order.orderDetails}">
+            <td class="col-name" th:text="${item.product.productName}"></td>
+            <td class="col-price total" th:text="${#numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT') + ' ₫'}">
+                200,000 đ
+            </td>
+            <td class="col-qty" th:text="${item.quantity}">2</td>
+            <td class="total col-total"
+                th:text="${#numbers.formatDecimal(item.price * item.quantity, 0, 'COMMA', 0, 'POINT') + ' ₫'}">400,000 đ
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<hr class="line"/>
+<div class="section">
+    <table>
+        <tr>
+            <td class="total">Giảm giá:</td>
+            <td class="total" th:text="${#numbers.formatDecimal(discountAmount, 0, 'COMMA', 0, 'POINT') + ' ₫'}"></td>
+        </tr>
+        <tr>
+            <td class="total">Thành tiền:</td>
+            <td class="total"
+                th:text="${#numbers.formatDecimal(totalPrice - discountAmount, 0, 'COMMA', 0, 'POINT') + ' ₫'}"></td>
+        </tr>
+        <!--        <tr>-->
+        <!--            <td class="total">Phí vận chuyển:</td>-->
+        <!--            <td class="total">20.000 đ</td>-->
+        <!--        </tr>-->
+        <tr>
+            <td class="total">Tổng số tiền (gồm VAT):</td>
+            <td class="total"
+                th:text="${#numbers.formatDecimal(totalPrice - discountAmount, 0, 'COMMA', 0, 'POINT') + ' ₫'}"></td>
+
+        </tr>
+    </table>
+</div>
+<hr class="line"/>
+<div class="section">
+    <p class="note">Lưu ý:</p>
+    <ul class="note">
+        <li>Vui lòng kiểm tra sản phẩm khi nhận hàng.</li>
+        <li>Đơn hàng có thể được giao nhiều lần do hàng được điều phối từ nhiều nơi.</li>
+        <li>Trong trường hợp có vấn đề phát sinh, VUVISA sẽ liên hệ với bạn.</li>
+    </ul>
+</div>
+
+<div class="footer">
+    Vuvisa - Chăm Sóc Khách Hàng<br/>
+    Điện thoại hỗ trợ: 19001900 - Email: <a href="mailto:cskh@vuvisa.com.vn" style="color:white;">cskh@vuvisa.com.vn</a>
+</div>
+
+</body>
+</html>

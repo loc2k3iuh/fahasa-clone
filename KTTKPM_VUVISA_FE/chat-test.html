@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VUVISA WebSocket Chat Test</title>
+  <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@5.0.0/bundles/stomp.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    .chat-window {
+      flex: 1;
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+      overflow-y: auto;
+      height: 400px;
+    }
+    .controls {
+      display: flex;
+      margin-bottom: 20px;
+    }
+    .controls input {
+      flex: 1;
+      padding: 8px;
+      margin-right: 10px;
+    }
+    .controls button {
+      padding: 8px 15px;
+      background-color: #C92127;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .message {
+      margin-bottom: 10px;
+      padding: 8px;
+      border-radius: 5px;
+    }
+    .sent {
+      background-color: #C92127;
+      color: white;
+      margin-left: 20%;
+      text-align: right;
+    }
+    .received {
+      background-color: #f1f1f1;
+      margin-right: 20%;
+    }
+    .system {
+      background-color: #ffffcc;
+      text-align: center;
+      font-style: italic;
+    }
+    .message-meta {
+      font-size: 0.8em;
+      color: #666;
+      margin-top: 5px;
+    }
+    .sent .message-meta {
+      color: #eee;
+    }
+    .connection-controls {
+      margin-bottom: 15px;
+    }
+    .connection-controls input {
+      margin-right: 10px;
+      padding: 8px;
+    }
+    .connection-controls button {
+      padding: 8px 15px;
+      background-color: #C92127;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>VUVISA WebSocket Chat Test</h1>
+    
+    <div class="connection-controls">
+      <label for="user-id">User ID:</label>
+      <input type="number" id="user-id" value="1" min="1">
+      <label for="room-id">Room ID:</label>
+      <input type="text" id="room-id" value="room1">
+      <button id="connect-btn">Connect</button>
+      <button id="disconnect-btn" disabled>Disconnect</button>
+    </div>
+    
+    <div class="chat-window" id="messages">
+      <div class="message system">
+        Welcome to the VUVISA Chat test. Connect to start chatting.
+      </div>
+    </div>
+    
+    <div class="controls">
+      <input type="text" id="message-input" placeholder="Type your message..." disabled>
+      <button id="send-btn" disabled>Send</button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const connectBtn = document.getElementById('connect-btn');
+      const disconnectBtn = document.getElementById('disconnect-btn');
+      const sendBtn = document.getElementById('send-btn');
+      const messageInput = document.getElementById('message-input');
+      const messagesContainer = document.getElementById('messages');
+      const userIdInput = document.getElementById('user-id');
+      const roomIdInput = document.getElementById('room-id');
+      
+      let stompClient = null;
+      let connected = false;
+      let userId = null;
+      let roomId = null;
+      
+      // Add a message to the chat window
+      function addMessage(content, type, sender = '', time = new Date()) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}`;
+        
+        const messageContent = document.createElement('div');
+        messageContent.textContent = content;
+        messageDiv.appendChild(messageContent);
+        
+        if (type !== 'system') {
+          const messageMeta = document.createElement('div');
+          messageMeta.className = 'message-meta';
+          messageMeta.textContent = `${sender} • ${time.toLocaleTimeString()}`;
+          messageDiv.appendChild(messageMeta);
+        }
+        
+        messagesContainer.appendChild(messageDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
+      
+      // Connect to the WebSocket server
+      connectBtn.addEventListener('click', function() {
+        userId = parseInt(userIdInput.value);
+        roomId = roomIdInput.value;
+        
+        if (!userId || !roomId) {
+          addMessage('Please enter a valid user ID and room ID.', 'system');
+          return;
+        }
+        
+        addMessage(`Connecting to WebSocket server with user ID ${userId}...`, 'system');
+        
+        // Create WebSocket connection
+        const socket = new SockJS('http://localhost:8080/ws');
+        stompClient = Stomp.over(socket);
+        
+        stompClient.connect(
+          {},
+          function(frame) {
+            connected = true;
+            addMessage(`Connected: ${frame}`, 'system');
+            
+            // Enable UI controls
+            connectBtn.disabled = true;
+            disconnectBtn.disabled = false;
+            messageInput.disabled = false;
+            sendBtn.disabled = false;
+            
+            // Subscribe to private messages
+            stompClient.subscribe(`/user/${userId}/queue/messages`, function(message) {
+              const messageData = JSON.parse(message.body);
+              addMessage(
+                messageData.content,
+                messageData.senderId === userId ? 'sent' : 'received',
+                messageData.senderUsername,
+                new Date(messageData.dateSent)
+              );
+            });
+            
+            // Subscribe to room messages
+            stompClient.subscribe(`/topic/room.${roomId}`, function(message) {
+              const messageData = JSON.parse(message.body);
+              addMessage(
+                messageData.content,
+                messageData.senderId === userId ? 'sent' : 'received',
+                messageData.senderUsername,
+                new Date(messageData.dateSent)
+              );
+            });
+            
+            // Set online status
+            stompClient.send('/app/online-status', {}, JSON.stringify({
+              userId: userId,
+              status: 'ONLINE',
+              isAdmin: false
+            }));
+          },
+          function(error) {
+            addMessage(`Error connecting: ${error}`, 'system');
+          }
+        );
+      });
+      
+      // Disconnect from the WebSocket server
+      disconnectBtn.addEventListener('click', function() {
+        if (stompClient && connected) {
+          // Set offline status
+          stompClient.send('/app/online-status', {}, JSON.stringify({
+            userId: userId,
+            status: 'OFFLINE',
+            isAdmin: false
+          }));
+          
+          stompClient.disconnect(function() {
+            addMessage('Disconnected from WebSocket server.', 'system');
+            
+            // Reset UI controls
+            connectBtn.disabled = false;
+            disconnectBtn.disabled = true;
+            messageInput.disabled = true;
+            sendBtn.disabled = true;
+            
+            stompClient = null;
+            connected = false;
+          });
+        }
+      });
+      
+      // Send a message
+      sendBtn.addEventListener('click', sendMessage);
+      messageInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          sendMessage();
+        }
+      });
+      
+      function sendMessage() {
+        const content = messageInput.value.trim();
+        if (!content || !connected || !stompClient) return;
+        
+        // Create message object
+        const message = {
+          content: content,
+          message_room_id: roomId,
+          sender_id: userId
+        };
+        
+        // Send via WebSocket
+        stompClient.send('/app/chat.sendMessage', {}, JSON.stringify(message));
+        
+        // Clear input
+        messageInput.value = '';
+      }
+    });
+  </script>
+</body>
+</html>
