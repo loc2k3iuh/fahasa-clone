@@ -1,4 +1,4 @@
-<h1 align="center">📚 VUVISA - E-commerce Platform Backend</h1>
+<h1 align="center">📚 VUVISA - E-commerce Application</h1>
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/df434a1d-eea8-452f-ab19-60d814d17298" width="400" alt="VUVISA Logo" />
