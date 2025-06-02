@@ -8,7 +8,7 @@
 
 
 <p align="center">
-  <b>Backend for a modern bookstore and office supply platform.</b><br>
+  <b>Application for a modern bookstore and office supply platform.</b><br>
   Inspired by <i>Fahasa</i> — with enhanced architecture and features.
 </p>
 
