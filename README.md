@@ -61,13 +61,16 @@ VUVISA is a comprehensive e-commerce platform backend built with Spring Boot (ba
 ## 🧰 Backend
 
 ### 🧩 Core
-- Java 17
-- Spring Boot 3.x
-- Spring Security
-- Spring Data JPA
-- Spring WebFlux
-- Spring Cloud OpenFeign
-- Spring WebSocket
+- Java (JDK 17)
+- MySQL (9.1.0)
+- Spring Boot (3.4.3)
+- Spring Security (3.4.3)
+- Spring Data JPA (3.4.3)
+- Spring WebFlux (3.4.3)
+- Spring Cloud OpenFeign (4.2.1)
+- Spring WebSocket (6.2.3)
+
+
 
 ### 🗄️ Database
 - MySQL
