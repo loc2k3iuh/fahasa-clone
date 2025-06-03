@@ -99,8 +99,7 @@ VUVISA is a comprehensive e-commerce platform backend built with Spring Boot (ba
 
 ### 🛠️ Development Tools
 - Gradle (8.13)
-- Lombok
-- Thymeleaf
+- Lombok (1.18.36)
 
 ---
 
